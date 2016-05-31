@@ -14,6 +14,6 @@ class Icecast extends Model
     ];
     
     public function mountpoint() {
-        $this->hasMany('App\Mountpoint');
+        return $this->hasMany('App\Models\Mountpoint');
     }
 }

@@ -11,13 +11,13 @@ class Mountpoint extends Model
 {
     protected $fillable = [
         'mount-name',
-        'ice_id',
+        'icecast_id',
         'password',
         'max-listeners',
         'bitrate',
     ];
     
     public function icecast() {
-        $this->belongsTo('App\Icecast');
+        $this->belongsTo('App\Models\Icecast');
     }
 }

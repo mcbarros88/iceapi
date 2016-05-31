@@ -16,15 +16,19 @@ class MountController extends Controller
     public function getMountList() {
         $mountlist = Icemount::all();
 
+        return new JsonResponse($mountlist);
+
     }
 
     public function mountSingleConfig($id) {
-        $singlemount=Mountpoint::findorfail($id);
+        $singlemount = Mountpoint::findorfail($id);
+
+        return new JsonResponse($singlemount);
 
     }
 
     public function mountDetail($id) {
-        $mountdetail=Mountpoint::findorfail($id);
+        $mountdetail = Mountpoint::findorfail($id);
 
     }
 
@@ -42,7 +46,7 @@ class MountController extends Controller
             'password' => $password,
             'max-listeners' => $maxListeners,
             'bitrate' => $bitrate,
-            'ice_id' => $iceid,
+            'icecast_id' => $iceid,
         ];
 
         $icecast->addMountPoint($iceMount);
@@ -56,6 +60,7 @@ class MountController extends Controller
 
     public function mountEdit($id, Request $request) {
         $mountedit=Mountpoint::findorfail($id);
+        
         $mountedit->update($request->all());
 
 
@@ -69,7 +74,21 @@ class MountController extends Controller
 
     }
 
-    public function mountDestroy() {
-        
+    public function mountDestroy($id, Icecast $icecast) {
+        $delete = Mountpoint::find($id);
+
+        if ($delete == true) {
+            $delete->delete();
+            $icecast->removeMountPoint($delete);
+            return new JsonResponse([
+                'success' => 'true',
+                'message' => 'Mountpoint cancellato con successo',
+            ]);
+        } else {
+            return new JsonResponse([
+                'success' => 'false',
+                'error' => 'Mountpoint non cancellato'
+            ]);
+        }
     }
 }

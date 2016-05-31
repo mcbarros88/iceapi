@@ -27,7 +27,7 @@ Route::post('/ice', ['as' => 'ice.create', 'uses' => 'IceController@iceCreate'])
 Route::put('/ice/{id}', ['as' => 'ice.edit', 'uses' => 'IceController@iceEdit']);
 Route::put('/ice/{id}/start', ['as' => 'ice.start', 'uses' => 'IceController@iceStart']);
 Route::put('/ice/{id}/stop', ['as' => 'ice.stop', 'uses' => 'IceController@iceStop']);
-Route::delete('/ice/{id}/delete', ['as' => 'ice.destroy', 'uses' => 'IceController@iceDestroy']);
+Route::get('/ice/{id}/delete', ['as' => 'ice.destroy', 'uses' => 'IceController@iceDestroy']);
 
 
 //mountpoint

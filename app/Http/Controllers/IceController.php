@@ -69,7 +69,7 @@ class IceController extends Controller
                 'password' => $password,
                 'max-listeners' => $maxListeners,
                 'bitrate' => $bitrate,
-                'ice_id' => $ice->id,
+                'icecast_id' => $ice->id,
             ]);
 
             return new JsonResponse([
@@ -141,20 +141,26 @@ class IceController extends Controller
         
     }
     
-    public function iceDestroy($id)
+    public function iceDestroy($id, Icecast $icecast)
     {
-        $delete = Icemount::find($id);
+        $icemount = Icemount::find($id);
 
-        if ($delete == true) {
-            $delete->delete();
+        if ($icemount == true) {
+
+            $icemount->mountpoint()->delete();
+            
+            $icemount->delete();
+
+            $icecast->deleteFolder($icemount->mountName);
+
             return new JsonResponse([
                 'success' => 'true',
-                'message' => 'Mountpoint cancellato con successo',
+                'message' => 'Icecast cancellato con successo',
             ]);
         } else {
             return new JsonResponse([
                 'success' => 'false',
-                'error' => 'Mountpoint non cancellato'
+                'error' => 'Icecast non cancellato'
             ]);
         }
     }

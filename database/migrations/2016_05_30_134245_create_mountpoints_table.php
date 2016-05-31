@@ -15,7 +15,7 @@ class CreateMountpointsTable extends Migration
         Schema::create('mountpoints', function (Blueprint $table) {
             $table->increments('id');
             $table->string('mount-name');
-            $table->integer('ice_id');
+            $table->integer('icecast_id');
             $table->string('password');
             $table->integer('max-listeners');
             $table->integer('bitrate');

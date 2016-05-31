@@ -8,7 +8,7 @@
 
 namespace App\Classes;
 
-use App\Models\Icecast\MountPoint;
+use App\Models\Mountpoint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Sabre;
@@ -132,7 +132,7 @@ class Icecast
     // Modifiy the current mountpoint template
     private function modifyMountTemplate ($name, $newProp) {
 
-        // Serach new Mountpoint template for property '$name' index
+        // Search new Mountpoint template for property '$name' index
         $index = $this->searchName($name, $this->mount);
 
         // Change value
@@ -144,11 +144,11 @@ class Icecast
 
         if( isset( $mount['mount-name']) ){
 
-            $mountExist = $this->folderExist('icecast/mountpoint'.$mount['mount-name']);
+            $mountExist = $this->folderExist('icecast/mountpoint'.$mount['id']);
 
             if(!$mountExist) {
 
-                $this->createFilesAndFolders($mount['mount-name']);
+                $this->createFilesAndFolders($mount['id']);
 
                 // Modify Icecast properties
                 $this->setPaths($mount['mount-name']);
@@ -159,8 +159,8 @@ class Icecast
                 $this->addMountPoint($mount);
 
                 $newXml = $this->arrayToXml($this->xml);
-                $this->saveXml($mount['mount-name'], $newXml);
-                
+                $this->saveXml($mount['id'], $newXml);
+
                 return true;
             }
             else {
@@ -169,6 +169,7 @@ class Icecast
 
         }
     }
+
 
     // Add Mountpoint to xml
     public function addMountPoint (Array $array){
@@ -442,7 +443,8 @@ class Icecast
 
     public function deleteXml($name){
         $path = $this->mountpath.$name.'/';
-        $files = Storage::allFiles($directory);
+
+        Storage::deleteDirectory($path);
 
     }
 
