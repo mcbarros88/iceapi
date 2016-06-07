@@ -10,10 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 class Mountpoint extends Model
 {
     protected $fillable = [
-        'mount-name',
+        'mount_name',
         'icecast_id',
         'password',
-        'max-listeners',
+        'max_listeners',
         'bitrate',
     ];
     

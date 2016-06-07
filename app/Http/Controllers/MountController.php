@@ -36,15 +36,15 @@ class MountController extends Controller
     {
         $iceid = Icemount::find($id)->id;
 
-        $mountname = Input::get('mount-name');
+        $mountname = Input::get('mount_name');
         $password = Input::get('password');
-        $maxListeners = Input::get('max-listeners');
+        $maxListeners = Input::get('max_listeners');
         $bitrate = Input::get('bitrate');
 
         $iceMount = [
-            'mount-name' => '/' . $mountname,
+            'mount_name' => '/' . $mountname,
             'password' => $password,
-            'max-listeners' => $maxListeners,
+            'max_listeners' => $maxListeners,
             'bitrate' => $bitrate,
             'icecast_id' => $iceid,
         ];

@@ -1,8 +1,8 @@
 {!! Form::open(['route' => ['mount.create' , 'id'=>1], 'method' => 'POST']) !!}
 
 <div class="form-group">
-    {!! Form::label('mount-name', 'Mountname:')!!}
-    {!! Form::text('mount-name', null, ['class'=>'form-control']) !!}
+    {!! Form::label('mount_name', 'Mountname:')!!}
+    {!! Form::text('mount_name', null, ['class'=>'form-control']) !!}
 </div>
 
 <div class="form-group">
@@ -11,8 +11,8 @@
 </div>
 
 <div class="form-group">
-    {!! Form::label('max-listeners', 'Max Listeners:')!!}
-    {!! Form::text('max-listeners', null, ['class'=>'form-control']) !!}
+    {!! Form::label('max_listeners', 'Max Listeners:')!!}
+    {!! Form::text('max_listeners', null, ['class'=>'form-control']) !!}
 </div>
 
 <div class="form-group">

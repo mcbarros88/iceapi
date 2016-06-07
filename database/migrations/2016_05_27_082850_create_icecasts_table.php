@@ -14,9 +14,9 @@ class CreateIcecastsTable extends Migration
     {
         Schema::create('icecasts', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('admin-user');
-            $table->string('admin-password');
-            $table->string('admin-mail');
+            $table->string('admin_user');
+            $table->string('admin_password');
+            $table->string('admin_mail');
             $table->integer('port');
             $table->timestamps();
         });

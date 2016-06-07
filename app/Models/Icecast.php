@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Icecast extends Model
 {
     protected $fillable = [
-        'admin-user',
-        'admin-password',
-        'admin-mail',
+        'admin_user',
+        'admin_password',
+        'admin_mail',
         'port',
     ];
     

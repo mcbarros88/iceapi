@@ -1,8 +1,8 @@
 {!! Form::open(['route' => ['ice.create'], 'method' => 'POST']) !!}
 
 <div class="form-group">
-    {!! Form::label('mount-name', 'Mountname:')!!}
-    {!! Form::text('mount-name', null, ['class'=>'form-control']) !!}
+    {!! Form::label('mount_name', 'Mountname:')!!}
+    {!! Form::text('mount_name', null, ['class'=>'form-control']) !!}
 </div>
 
 <div class="form-group">
@@ -11,8 +11,8 @@
 </div>
 
 <div class="form-group">
-    {!! Form::label('max-listeners', 'Max Listeners:')!!}
-    {!! Form::text('max-listeners', null, ['class'=>'form-control']) !!}
+    {!! Form::label('max_listeners', 'Max Listeners:')!!}
+    {!! Form::text('max_listeners', null, ['class'=>'form-control']) !!}
 </div>
 
 <div class="form-group">
@@ -21,18 +21,18 @@
 </div>
 
 <div class="form-group">
-    {!! Form::label('admin-user', 'Admin Username:')!!}
-    {!! Form::text('admin-user', null, ['class'=>'form-control']) !!}
+    {!! Form::label('admin_user', 'Admin Username:')!!}
+    {!! Form::text('admin_user', null, ['class'=>'form-control']) !!}
 </div>
 
 <div class="form-group">
-    {!! Form::label('admin-mail', 'Admin Email:')!!}
-    {!! Form::text('admin-mail', null, ['class'=>'form-control']) !!}
+    {!! Form::label('admin_mail', 'Admin Email:')!!}
+    {!! Form::text('admin_mail', null, ['class'=>'form-control']) !!}
 </div>
 
 <div class="form-group">
-    {!! Form::label('admin-password', 'Admin Password:')!!}
-    {!! Form::password('admin-password', null, ['class'=>'form-control']) !!}
+    {!! Form::label('admin_password', 'Admin Password:')!!}
+    {!! Form::password('admin_password', null, ['class'=>'form-control']) !!}
 </div>
 
 <div class="form-group">

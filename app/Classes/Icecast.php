@@ -11,6 +11,7 @@ namespace App\Classes;
 use App\Models\Mountpoint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use PhpParser\Node\Expr\Array_;
 use Sabre;
 
 use App\Http\Requests;
@@ -76,10 +77,10 @@ class Icecast
 
     }
 
-    // Get Current xml By mountname
+    // Get Current xml By mount id
     public function getXml($name){
 
-        $xml = Storage::get($this->mountpath.$name.$name.'.xml');
+        $xml = Storage::get('icecast/'.$name.'/'.$name.'.xml');
         return $this->xmltoArray($xml);
 
     }
@@ -110,7 +111,7 @@ class Icecast
     // Save single icecast xml
     public function saveXml($name, $content){
 
-        $file = $this->mountpath.$name.$name.'.xml';
+        $file = 'icecast/'.$name.'/'.$name.'.xml';
         Storage::put($file, $content);
 
     }
@@ -139,21 +140,30 @@ class Icecast
         $this->mount['value'][$index]['value'] = $newProp;
 
     }
+    public function modIcecast(Array $icecast){
 
+        $this->xml = $this->getXml($icecast['id']);
+
+        $this->setAdmin($icecast['admin_mail'], $icecast['admin_user'], $icecast['admin_password']);
+
+        $updateXml = $this->arrayToXml($this->xml);
+        $this->saveXml($icecast['id'], $updateXml);
+
+    }
     public function createIcecast(Array $mount , Array $icecast){
 
-        if( isset( $mount['mount-name']) ){
+        /*if( isset( $mount['id']) ){
 
             $mountExist = $this->folderExist('icecast/mountpoint'.$mount['id']);
 
-            if(!$mountExist) {
+            if(!$mountExist) {*/
 
                 $this->createFilesAndFolders($mount['id']);
 
                 // Modify Icecast properties
-                $this->setPaths($mount['mount-name']);
+                $this->setPaths($mount['mount_name']);
                 $this->setPort($icecast['port']);
-                $this->setAdmin($icecast['admin-mail'], $icecast['admin-user'], $icecast['admin-password']);
+                $this->setAdmin($icecast['admin_mail'], $icecast['admin_user'], $icecast['admin_password']);
 
                 // Add mountpoint
                 $this->addMountPoint($mount);
@@ -162,12 +172,12 @@ class Icecast
                 $this->saveXml($mount['id'], $newXml);
 
                 return true;
-            }
+            /*}
             else {
                 return false;
             }
 
-        }
+        }*/
     }
 
 
@@ -198,7 +208,7 @@ class Icecast
 
                 //  Cylce trough sigle prop
                 foreach($value['value'] as $item){
-                    if($item['name'] == '{}mount-name' && $item['value'] == $name){
+                    if($item['name'] == '{}mount_name' && $item['value'] == $name){
                         return $index;
                     };
                 }
@@ -416,7 +426,7 @@ class Icecast
 
     public function createXml($name){
 
-        $path = $this->mountpath.$name.$name.'.xml';
+        $path = 'icecast/'.$name.'/'.$name.'.xml';
         Storage::put($path, $this->arrayToXml($this->xmlTemplate) );
 
     }
@@ -424,7 +434,7 @@ class Icecast
     public function crateFiles($name){
 
         $this->createXml($name);
-        $path = $this->mountpath.$name;
+        $path = 'icecast/'.$name;
 
         Storage::put($path.'/log/access.log', '');
         Storage::put($path.'/log/error.log', '');
@@ -465,7 +475,7 @@ class Icecast
     }
 
     public function deleteFolder($name){
-        $path = 'icecast/mountpoint/'.$name;
+        $path = 'icecast/'.$name;
 
         if($this->folderExist($path) ){
             Storage::deleteDirectory($path);
@@ -474,7 +484,7 @@ class Icecast
 
     public function createFolder($name){
 
-        $path = $this->mountpath.$name;
+        $path = 'icecast/'.$name;
         Storage::makeDirectory($path);
 
     }

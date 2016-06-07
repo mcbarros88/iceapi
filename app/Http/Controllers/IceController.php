@@ -34,47 +34,49 @@ class IceController extends Controller
     public function iceCreate(Icecast $icecast) {
 
         /* MOUNTPOINT */
-        $mountname = Input::get('mount-name');
+        $mountname = Input::get('mount_name');
         $password = Input::get('password');
-        $maxListeners = Input::get('max-listeners');
+        $maxListeners = Input::get('max_listeners');
         $bitrate = Input::get('bitrate');
 
-
+        
         /* ICECAST */
-        $adminUser = Input::get('admin-user');
-        $adminMail = Input::get('admin-mail');
-        $adminPassword = Input::get('admin-password');
+        $adminUser = Input::get('admin_user');
+        $adminMail = Input::get('admin_mail');
+        $adminPassword = Input::get('admin_password');
         $port = $this->findFreePort();
 
-        $iceMount = [
-            'mount-name' => '/'.$mountname,
+        $mount = [
+            'mount_name' => '/'.$mountname,
             'password' => $password,
-            'max-listeners' => $maxListeners,
+            'max_listeners' => $maxListeners,
             'bitrate' => $bitrate,
         ];
 
-        $iceServer = [
-            'admin-user' => $adminUser,
-            'admin-password' => $adminPassword,
-            'admin-mail' => $adminMail,
-            'port' => $port
-        ];
+        $find = Mountpoint::all('mount_name');
+        $pippo = $find->search(function ($item, $key) use ($mount){
+            return $item['mount_name'] == $mount['mount_name'] ;
+        });
 
-        $verify = $icecast->createIcecast($iceMount, $iceServer);
+        if($pippo === false){
+            $ice = Icemount::create([
+                'admin_user' => $adminUser,
+                'admin_password' => $adminPassword,
+                'admin_mail' => $adminMail,
+                'port' => $port
+            ])->toArray();
 
-        if ($verify == true) {
-            $ice = Icemount::create($iceServer);
-            Mountpoint::create([
-                'mount-name' => '/'.$mountname,
-                'password' => $password,
-                'max-listeners' => $maxListeners,
-                'bitrate' => $bitrate,
-                'icecast_id' => $ice->id,
-            ]);
+
+            $mount = array_add($mount, 'icecast_id', $ice['id']);
+            
+            $justcreate = Mountpoint::create($mount)->toArray();
+            
+            $icecast->createIcecast($justcreate, $ice);
 
             return new JsonResponse([
-                'id' => $ice->id
+                'id' => $ice['id']
             ]);
+
         } else {
             return new JsonResponse([
                 'success' => 'false',
@@ -82,55 +84,29 @@ class IceController extends Controller
             ]);
         }
     }
-    
-    public function iceEdit($id, Icecast $icecast) {
 
-        $edit=Icemount::findorfail($id);
+    public function iceEdit($id, Icecast $icecast, Request $request) {
 
-        /* MOUNTPOINT */
-        $mountname = Input::get('mount-name');
-        $password = Input::get('password');
-        $maxListeners = Input::get('max-listeners');
-        $bitrate = Input::get('bitrate');
+        $edit = Icemount::findorfail($id);
 
-        /* ICECAST */
-        $adminUser = Input::get('admin-user');
-        $adminMail = Input::get('admin-mail');
-        $adminPassword = Input::get('admin-password');
-
-
-        $iceMount = [
-            'mount-name' => '/'.$mountname,
-            'password' => $password,
-            'max-listeners' => $maxListeners,
-            'bitrate' => $bitrate,
-        ];
-
-        $iceServer = [
-            'admin-user' => $adminUser,
-            'admin-password' => $adminPassword,
-            'admin-mail' => $adminMail,
-
-        ];
-
-        $verify = $icecast->createIcecast($iceMount, $iceServer);
-
-        if ($verify == true) {
-            $edit -> update(
-                array_merge($iceServer,$iceMount)
-            );
-
-            return new JsonResponse([
-                'id' => $edit->id
-            ]);
-        } else {
-            return new JsonResponse([
-                'success' => 'false',
-                'error' => 'Nome Mountpoint già eistente',
-            ]);
+        if ($request->has('admin_user')){
+            $edit->admin_user = $request->input('admin_user');
         }
+        if ($request->has('admin_password')){
+            $edit->admin_password = $request->input('admin_password');
+        }
+        if ($request->has('admin_mail')){
+            $edit->admin_mail = $request->input('admin_mail');
+        }
+        $edit->save();
+        $justupdated=$edit->toArray();
+        $icecast->modIcecast($justupdated);
 
 
+
+        return new JsonResponse([
+            'id' => $edit->id
+            ]);
     }
     
     public function iceStart() {
@@ -146,12 +122,12 @@ class IceController extends Controller
         $icemount = Icemount::find($id);
 
         if ($icemount == true) {
-
+            $icecast->deleteFolder($icemount->id);
             $icemount->mountpoint()->delete();
             
             $icemount->delete();
 
-            $icecast->deleteFolder($icemount->mountName);
+            
 
             return new JsonResponse([
                 'success' => 'true',

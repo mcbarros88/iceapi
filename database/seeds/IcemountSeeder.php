@@ -13,13 +13,13 @@ class IcemountSeeder extends Seeder
     {
         DB::table('icecasts')->insert([
 
-        'admin-user'=>'seed',
-        'admin-password' => 'seed',
-        'admin-mail' => 'seed@seed.it',
+        'admin_user'=>'seed',
+        'admin_password' => 'seed',
+        'admin_mail' => 'seed@seed.it',
         'port' => '8000',
-        'mount-name' => 'seeder',
+        'mount_name' => 'seeder',
         'password' => 'seed',
-        'max-listeners' => '10',
+        'max_listeners' => '10',
         'bitrate' => '64',
         ]);
     }
