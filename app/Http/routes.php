@@ -38,7 +38,7 @@ Route::post('/ice/{id}/mount', ['as' => 'mount.create', 'uses' => 'MountControll
 Route::put('/mount/{id}', ['as' => 'mount.edit', 'uses' => 'MountController@mountEdit']);
 Route::put('/mount/{id}/enable', ['as' => 'mount.start', 'uses' => 'MountController@mountStart']);
 Route::put('/mount/{id}/disable', ['as' => 'mount.stop', 'uses' => 'MountController@mountStop']);
-Route::get('/mount/{id}/delete', ['as' => 'mount.destroy', 'uses' => 'MountController@mountDestroy']);
+Route::delete('/mount/{id}', ['as' => 'mount.destroy', 'uses' => 'MountController@mountDestroy']);
 
 //test
 Route::get('/test', function () {
