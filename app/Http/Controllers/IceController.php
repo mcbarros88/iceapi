@@ -69,9 +69,18 @@ class IceController extends Controller
 
             $mount = array_add($mount, 'icecast_id', $ice['id']);
             
-            $justcreate = Mountpoint::create($mount)->toArray();
+            $newmount = Mountpoint::create($mount);
+
+            $mountforXML = [
+                'id' => $newmount->id,
+                'mount-name' => '/'.$mountname,
+                'password' => $password,
+                'max-listeners' => $maxListeners,
+                'bitrate' => $bitrate,
+            ];
+
             
-            $icecast->createIcecast($justcreate, $ice);
+            $icecast->createIcecast($mountforXML, $ice);
 
             return new JsonResponse([
                 'id' => $ice['id']
@@ -87,25 +96,25 @@ class IceController extends Controller
 
     public function iceEdit($id, Icecast $icecast, Request $request) {
 
-        $edit = Icemount::findorfail($id);
+        $icedit = Icemount::findorfail($id);
 
         if ($request->has('admin_user')){
-            $edit->admin_user = $request->input('admin_user');
+            $icedit->admin_user = $request->input('admin_user');
         }
         if ($request->has('admin_password')){
-            $edit->admin_password = $request->input('admin_password');
+            $icedit->admin_password = $request->input('admin_password');
         }
         if ($request->has('admin_mail')){
-            $edit->admin_mail = $request->input('admin_mail');
+            $icedit->admin_mail = $request->input('admin_mail');
         }
-        $edit->save();
-        $justupdated=$edit->toArray();
+        $icedit->save();
+        $justupdated=$icedit->toArray();
         $icecast->modIcecast($justupdated);
 
 
 
         return new JsonResponse([
-            'id' => $edit->id
+            'id' => $icedit->id
             ]);
     }
     

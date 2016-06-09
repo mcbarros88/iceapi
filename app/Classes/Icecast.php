@@ -161,7 +161,7 @@ class Icecast
                 $this->createFilesAndFolders($mount['id']);
 
                 // Modify Icecast properties
-                $this->setPaths($mount['mount_name']);
+                $this->setPaths($mount['mount-name']);
                 $this->setPort($icecast['port']);
                 $this->setAdmin($icecast['admin_mail'], $icecast['admin_user'], $icecast['admin_password']);
 
@@ -196,6 +196,16 @@ class Icecast
 
     }
 
+    public function addMpToIcecast($iceid, Array $mount ){
+
+        $this->xml = $this->getXml($iceid);
+        $this->addMountPoint($mount);
+
+        $updateXml = $this->arrayToXml($this->xml);
+        $this->saveXml($iceid, $updateXml);
+
+    }
+
     // Return index of a mountpoint by name
     public function findMountpoint($name){
 
@@ -208,7 +218,8 @@ class Icecast
 
                 //  Cylce trough sigle prop
                 foreach($value['value'] as $item){
-                    if($item['name'] == '{}mount_name' && $item['value'] == $name){
+
+                    if($item['name'] == '{}mount-name' && $item['value'] == $name){
                         return $index;
                     };
                 }
@@ -220,22 +231,28 @@ class Icecast
     }
 
     // Remove Mountpoint with a given name property
-    public function removeMountPoint($name){
+    public function removeMountPoint($name, $iceid){
+
+        $this->xml = $this->getXml($iceid);
 
         if( $index = $this->findMountpoint($name) )
         {
             // Delete mounpoint
             unset($this->xml['value'][$index]);
-            return true;
+            $updateXml = $this->arrayToXml($this->xml);
+            $this->saveXml($iceid, $updateXml);
 
         }
         return false;
     }
 
     // Modify Mountpoint by name
-    public function modifyMountPoint ($name, Array $arr){
+    public function modifyMountPoint ($name, Array $arr, $iceid){
+
+        $this->xml = $this->getXml($iceid);
 
         if( $mountIndex = $this->findMountpoint($name) ){
+
             foreach ($arr as $propName => $propValue) {
 
                 // if key exist
@@ -246,6 +263,8 @@ class Icecast
                 };
 
             }
+            $updateXml = $this->arrayToXml($this->xml);
+            $this->saveXml($iceid, $updateXml);
 
         };
 

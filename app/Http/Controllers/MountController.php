@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Mountpoint;
 use App\Models\Icecast as Icemount;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Requests;
 use App\Classes\Icecast;
@@ -38,32 +39,76 @@ class MountController extends Controller
 
         $mountname = Input::get('mount_name');
         $password = Input::get('password');
-        $maxListeners = Input::get('max_listeners');
+        $max_listeners = Input::get('max_listeners');
         $bitrate = Input::get('bitrate');
 
         $iceMount = [
             'mount_name' => '/' . $mountname,
             'password' => $password,
-            'max_listeners' => $maxListeners,
+            'max_listeners' => $max_listeners,
             'bitrate' => $bitrate,
             'icecast_id' => $iceid,
         ];
 
-        $icecast->addMountPoint($iceMount);
+        $mount = Mountpoint::create($iceMount)->toArray();
 
-        $mount = Mountpoint::create($iceMount);
+        $newmount = [
+            'mount-name' => '/' . $mountname,
+            'password' => $password,
+            'max-listeners' => $max_listeners,
+            'bitrate' => $bitrate
+        ];
+
+        $icecast->addMpToIcecast($iceid, $newmount);
 
         return new JsonResponse([
-            'id' => $mount->id
+            'id' => $mount['id']
         ]);
     }
 
-    public function mountEdit($id, Request $request) {
-        $mountedit=Mountpoint::findorfail($id);
-        
-        $mountedit->update($request->all());
+    public function mountEdit($id, Icecast $icecast, Request $request)
+    {
+
+        $mountedit = Mountpoint::findorfail($id);
+
+        if ($request->has('max_listeners')) {
+            $mountedit->max_listeners = $request->input('max_listeners');
+        }
+
+        if ($request->has('password')) {
+            $mountedit->password = $request->input('password');
+        }
+
+        if ($request->has('bitrate')) {
+            $mountedit->bitrate = $request->input('bitrate');
+        }
+
+        $mountedit->save();
+
+        /*$idea = DB::table('mountpoints')->where('icecast_id', '1')->get();
+        dd($idea);
+        foreach ($idea as $mp){
+            $newmount = [
+                'mount-name' => $mp->mount_name,
+                'password' => $mp->password,
+                'max-listeners' => $mp->max_listeners,
+                'bitrate' => $mp->bitrate
+            ];
+        }*/
+
+        $newmount = [
+            'password' => $mountedit->password,
+            'max-listeners' => $mountedit->max_listeners,
+            'bitrate' => $mountedit->bitrate
+        ];
 
 
+        $icecast->modifyMountPoint($mountedit->mount_name, $newmount, $mountedit->icecast_id);
+
+
+        return new JsonResponse([
+            'id' => $mountedit->id
+        ]);
     }
 
     public function mountStart() {
@@ -79,7 +124,7 @@ class MountController extends Controller
 
         if ($delete == true) {
             $delete->delete();
-            $icecast->removeMountPoint($delete);
+            $icecast->removeMountPoint($delete->mount_name, $delete->icecast_id);
             return new JsonResponse([
                 'success' => 'true',
                 'message' => 'Mountpoint cancellato con successo',
@@ -92,3 +137,4 @@ class MountController extends Controller
         }
     }
 }
+

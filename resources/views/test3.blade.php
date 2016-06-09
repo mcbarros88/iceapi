@@ -1,3 +1,5 @@
+<h1>Modifica Icecast</h1>
+
 {!! Form::open(['route' => ['ice.edit' , 'id'=>1], 'method' => 'put']) !!}
 
 <div class="form-group">

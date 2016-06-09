@@ -1,3 +1,5 @@
+<h1>Crea Icecast e mountpoint</h1>
+
 {!! Form::open(['route' => ['ice.create'], 'method' => 'POST']) !!}
 
 <div class="form-group">

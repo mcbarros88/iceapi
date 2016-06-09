@@ -1,10 +1,10 @@
-<h1>aggiungi Mountpoint</h1>
+<h1>Modifica Mountpoint</h1>
 
-{!! Form::open(['route' => ['mount.create' , 'id'=>1], 'method' => 'POST']) !!}
+{!! Form::open(['route' => ['mount.edit' , 'id'=>1], 'method' => 'put']) !!}
 
 <div class="form-group">
-    {!! Form::label('mount_name', 'Mountname:')!!}
-    {!! Form::text('mount_name', null, ['class'=>'form-control']) !!}
+    {!! Form::label('max_listeners', 'Max listeners:')!!}
+    {!! Form::text('max_listeners', null, ['class'=>'form-control']) !!}
 </div>
 
 <div class="form-group">
@@ -13,17 +13,12 @@
 </div>
 
 <div class="form-group">
-    {!! Form::label('max_listeners', 'Max Listeners:')!!}
-    {!! Form::text('max_listeners', null, ['class'=>'form-control']) !!}
-</div>
-
-<div class="form-group">
     {!! Form::label('bitrate', 'Bitrate:')!!}
     {!! Form::text('bitrate', null, ['class'=>'form-control']) !!}
 </div>
-
 <div class="form-group">
     {!! Form::submit('Hope!', ['class'=>'btn btn-primary form-control'] )!!}
 </div>
+
 
 {!! Form::close() !!}
