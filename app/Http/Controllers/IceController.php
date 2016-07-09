@@ -118,7 +118,13 @@ class IceController extends Controller
             ]);
     }
     
-    public function iceStart() {
+    public function iceStart($id, Icecast $icecast) {
+        Icemount::findorfail($id);
+        $icecast->startIcecast($id);
+
+        return new JsonResponse([
+            'success' => 'true',
+        ]);
         
     }
     

@@ -161,7 +161,7 @@ class Icecast
                 $this->createFilesAndFolders($mount['id']);
 
                 // Modify Icecast properties
-                $this->setPaths($mount['mount-name']);
+                $this->setPaths($mount['id']);
                 $this->setPort($icecast['port']);
                 $this->setAdmin($icecast['admin_mail'], $icecast['admin_user'], $icecast['admin_password']);
 
@@ -277,7 +277,8 @@ class Icecast
     public function startIcecast($name){
 
         $descriptorspec = array(array("pipe", "r"), array("pipe", "w"), array("pipe", "a"));
-        $process = proc_open(' icecast2 -c '.$this->icepath.'/mountpoint/'.$name.'/'.$name.'.xml', $descriptorspec, $pipes);
+
+        $process = proc_open(' icecast2 -c '.$this->icepath.$name.'/'.$name.'.xml', $descriptorspec, $pipes);
         $status = proc_get_status($process);
 
         $pid = $status['pid'];
@@ -349,8 +350,8 @@ class Icecast
 
     public function savePid($name, $pid){
 
-        return Storage::put($this->mountpath.'/'.$name.'/pid.txt', $pid);
-
+        return Storage::put('icecast/'.$name.'/pid.txt', $pid);
+       
     }
 
     public function icecastStatus($name){
@@ -394,9 +395,9 @@ class Icecast
     public function setPaths ($name){
 
         $array = [
-            'basedir' => $this->icepath.'/mountpoint'.$name,
-            'logdir' =>  $this->icepath.'/mountpoint'.$name.'/log',
-            'webroot' => $this->icepath.'/web'
+            'basedir' => $this->icepath.$name,
+            'logdir' =>  $this->icepath.$name.'/log',
+            'webroot' => $this->icepath.'web'
         ];
 
         $pathsIndex = $this->findOne($this->xml, 'paths');
